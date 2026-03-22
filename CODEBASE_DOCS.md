@@ -1,10 +1,10 @@
 # Documentação do Código-Fonte
 
-Esta é uma documentação simplificada do código-fonte, detalhando cada arquivo, classe e método para que você possa entender facilmente como o solucionador mTSP (Multiple Traveling Salesperson Problem - Problema dos Múltiplos Caixeiros Viajantes) funciona, sem precisar de um conhecimento profundo em algoritmos complexos.
+Esta é uma documentação simplificada do código-fonte, detalhando cada arquivo, classe e método.
 
 ### 1. `main.py`
 Este é o ponto de entrada do programa, onde tudo se conecta.
-* **`main()`**: A função principal que inicia o programa. Ela carrega a configuração, inicializa o problema com coordenadas fixas de cidades e do depósito (depot), configura o Algoritmo Genético (Genetic Algorithm - GA), executa-o e, por fim, imprime as melhores rotas encontradas e suas estatísticas.
+* **`main()`**: A função principal que inicia o programa. Ela carrega a configuração, inicializa o problema com coordenadas fixas de cidades e do depósito (depot), configura o Algoritmo Genético (Genetic Algorithm), executa-o e, por fim, imprime as melhores rotas encontradas e suas estatísticas.
 
 ---
 
@@ -33,7 +33,7 @@ O "cérebro" da operação. Ele usa conceitos inspirados na evolução para melh
 ---
 
 ### 5. `src/mtsp.py`
-Define as regras específicas do seu Problema dos Múltiplos Caixeiros Viajantes.
+Define as regras específicas do Problema dos Múltiplos Caixeiros Viajantes.
 * **`MTSP` (Classe)**: Representa o mapa, os trabalhadores e as regras que eles devem seguir.
   * **`__init__(...)`**: Configura o mapa recebendo as coordenadas das cidades, o depósito (ponto de partida/chegada), e o número de trabalhadores. Ele também pré-calcula as distâncias entre todas as cidades para acelerar o programa.
   * **`initialize(population_size)`**: Cria a primeira geração de soluções. Ela faz com que 95% delas sejam completamente aleatórias, mas inclui 5% de palpites "inteligentes" (greedy) para dar ao algoritmo um bom ponto de partida.
@@ -51,3 +51,4 @@ Define as regras específicas do seu Problema dos Múltiplos Caixeiros Viajantes
 
 * **`MTSPLogger` (Classe)**: 
   * **`print_header()` / `log(...)`**: Simplesmente desenha a tabela de texto no terminal para que você possa observar o algoritmo melhorar as rotas em tempo real conforme as gerações passam.
+
