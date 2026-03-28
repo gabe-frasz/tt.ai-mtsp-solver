@@ -1,67 +1,78 @@
-# mTSP Solver - Genetic Algorithm
+# Solucionador de mTSP - Algoritmo Genético
 
-This project implements a **Multiple Travelling Salesman Problem (mTSP)** solver using a **Genetic Algorithm (GA)** in Python. The goal is to optimize the routes of multiple salesmen (workers) who must visit a set of cities, starting and returning to a central depot, while minimizing total distance and balancing the workload.
+Este projeto implementa um solucionador para o **Problema do Caixeiro Viajante Múltiplo (mTSP)** usando um **Algoritmo Genético (AG)** em Python. O Problema do Caixeiro-Viajante Múltiplo (mTSP) é uma versão do clássico Problema do Caixeiro-Viajante (TSP), em que vários vendedores trabalham juntos para visitar um conjunto de cidades.
 
-## 📋 Problem Description
+## 📋 Descrição do Problema
 
-- **Salesmen:** 3 workers.
-- **Cities:** 30 cities with fixed coordinates.
-- **Depot:** Central office located at (30, 30).
-- **Goal:** Minimize total distance traveled by all workers and minimize the standard deviation of distances between workers.
-- **Constraints:**
-  - Each city must be visited exactly once.
-  - Every worker must visit between 5 and 15 cities.
-  - The difference between the number of cities assigned to any two workers cannot exceed 5.
-  - No worker's total distance can exceed 350 units.
+Neste projeto, considera-se um cenário realista de uma empresa com 3 vendedores responsáveis por atender 30 cidades, representadas por coordenadas fixas em um plano cartesiano. Todos os vendedores partem de um depósito central localizado em (30, 30), realizam suas visitas e retornam ao ponto de origem ao final da rota.
 
-## 🛠️ Installation
+O desafio é decidir quais cidades cada vendedor deve visitar e em que ordem, buscando tornar o trabalho da equipe o mais eficiente possível.
 
-1. **Clone the repository:**
+- 🎯 **Objetivos:**
+O problema tem dois objetivos principais:
+  - Reduzir ao máximo a distância total percorrida por todos os vendedores;
+  - Manter as rotas equilibradas, evitando que alguns percorram muito mais que outros.
+Assim, a ideia é encontrar uma solução que seja não só eficiente no geral, mas também justa na divisão do trabalho entre os vendedores.
+ 
+- ⚠️ **Restrições:**
+A solução deve respeitar as seguintes restrições:
+  - **Cobertura completa**: cada cidade deve ser visitada exatamente uma vez;
+  - **Limite de carga**: cada vendedor deve visitar entre 5 e 15 cidades;
+  - **Balanceamento**: a diferença no número de cidades entre quaisquer dois vendedores não pode exceder 5;
+  - **Limite de distância**: a rota total de cada vendedor não pode ultrapassar 350 unidades de distância;
+  - **Ciclo fechado**: todas as rotas devem começar e terminar no depósito central.
+ 
+- ⚙️ **Abordagem de Solução:**
+Para resolver o problema, o projeto utiliza um **Algoritmo Genético**, inspirado no processo de evolução natural, para encontrar boas soluções de forma aproximada. Cada solução possível representa uma maneira de dividir e organizar as rotas entre os vendedores, e, ao longo das gerações, essas soluções vão sendo melhoradas por meio de operações como **seleção, cruzamento e mutação**.
+
+## 🛠️ Instalação
+
+1. **Clone o repositório:**
    ```bash
    git clone https://github.com/your-username/tt.ai-mtsp-solver.git
    cd tt.ai-mtsp-solver
    ```
 
-2. **(Optional) Create a virtual environment:**
+2. **(Opcional) Crie um ambiente virtual:**
    ```bash
    python3 -m venv venv
    source venv/bin/bin/activate  # Linux/macOS
    ```
 
-3. **Install dependencies:**
-   *(Optional)* If you want to use YAML configuration files:
+3. **Instale as dependências:**
+   *(Opcional)* Se você quiser usar arquivos de configuração YAML:
    ```bash
    pip install pyyaml
    ```
 
-## 🚀 Execution
+## 🚀 Execução:
 
-Run the solver using the default parameters:
+Execute o solucionador usando os parâmetros padrão:
 ```bash
 python3 main.py
 ```
 
-### Configuration via CLI Flags
+### Configuração via Flags da CLI
 
-You can override parameters directly from the command line:
+Você pode sobrescrever os parâmetros diretamente da linha de comando:
 ```bash
 python3 main.py -p 200 -g 500 -m 0.1 -w 3
 ```
 
-**Available flags:**
-- `-p, --population`: Population size (default: 100).
-- `-g, --generations`: Number of generations (default: 1000).
-- `-m, --mutation`: Mutation rate (0.0 to 1.0).
-- `-x, --crossover`: Crossover rate (0.0 to 1.0).
-- `-e, --elite`: Number of elite individuals to preserve.
-- `-c, --config`: Path to a `.json` or `.yaml` configuration file.
+**Opções disponíveis:**
+- `-p, --population`: Tamanho da população (default: 100).
+- `-g, --generations`: Número de gerações (default: 1000).
+- `-m, --mutation`: Taxa de mutação (0.0 to 1.0).
+- `-x, --crossover`: Taxa de cruzamento (0.0 to 1.0).
+- `-e, --elite`: Número de indivíduos de elite a serem preservados.
+- `-c, --config`: Caminho para um arquivo de configuração `.json` ou `.yaml`.
 
-### Output Example
+### Exemplos de saída
 
-The program will output the complete route for each worker, the individual distances, the total distance, the standard deviation, and any constraint violations found.
+O programa exibirá a rota completa para cada trabalhador, as distâncias individuais, a distância total, o desvio padrão e quaisquer violações de restrição encontradas.
 
-## 📂 Project Structure
+## 📂 Estrutura do Projeto
 
-- `src/`: Source code containing the GA logic, problem definition, and utilities.
-- `main.py`: Entry point for the application.
-- `docs/`: Technical documentation (modelagem and hiperparametros).
+- `src/`: Código-fonte contendo a lógica do algoritmo genético, a definição do problema e utilitários.
+- `main.py`: Ponto de entrada para a aplicação.
+- `docs/`: Documentação técnica (modelagem e hiperparâmetros).
