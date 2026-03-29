@@ -34,6 +34,7 @@ A solução implementada foi um cromossomo unidimensional, ou seja, vetor 1D, co
  `[1, 5, 3, 31, 2, 8, 32, 4, 6]`
  - Trabalhador 1 → [1, 5, 3]
  - Trabalhador 2 → [2, 8]
+ - Trabalhador 3 → [4, 6]
 
 ### **Domínio dos valores** 
 
@@ -82,7 +83,7 @@ A função de aptidão é definida como um problema de maximização com penalid
   >
   >`R7:` limite de distância por trabalhador
 
-  As penalidades são calculadas proporcionalmente à violação.
+  As penalidades são calculadas proporcionalmente à violação. As demais restrições (R1 até R3) são validadas durante a execução do algoritmo, ou seja, todos os indivíduos as respeitam, não sendo necessário o cálculo de suas respectivas penalidades.
 
 - **Parâmetros utilizados:** 
   >`V = 10000:` constante base
@@ -91,7 +92,7 @@ A função de aptidão é definida como um problema de maximização com penalid
   >
   >`β = 3.0:` peso do balanceamento
   >
-  >`penalty_multiplier = 5000Tournament Selection 
+  >`penalty_multiplier = 5000` 
 
 
 - **Justificativa dos pesos:** 
@@ -110,7 +111,7 @@ A função de aptidão é definida como um problema de maximização com penalid
 
   1. Seleciona dois pontos de corte
   2. Copia subsequência do primeiro pai
-  3. Preenche com genes do segundo pai mantendo a ordem
+  3. Preenche com genes do segundo pai mantendo a ordem e excluindo aqueles iguais aos copiados do primeiro pai
 
   Esse metódo garante que nenhuma cidade saia duplicada ou 
   perdida e tem preservação parcial da estrutura das rotas.
@@ -123,7 +124,7 @@ A função de aptidão é definida como um problema de maximização com penalid
 
 - **Tratamento das restrições** 
   
-  >Os operadores não garantem diretamente as retrições. Ao invés disso elas permitem soluções inválidas e a frunção de aptidão penaliza essas soluções.
+  >Os operadores não garantem diretamente as retrições. Ao invés disso, elas permitem soluções inválidas e a função de aptidão penaliza essas soluções rigorosamente.
   >
   >A vantagem desse tratamento é a maior liberdade de exploração e evita complexidade nos operadores.
 
@@ -132,7 +133,7 @@ A função de aptidão é definida como um problema de maximização com penalid
 
 A população inicial é gerada por uma abordagem híbrida:
   1. **Aleatória (95%)**
-  >Os cromossomos são embaralhados aleatoriamente, garantindo diversiadade.
+  >Os cromossomos são embaralhados aleatoriamente, garantindo diversidade.
 
   2. **Heurística gulosa (5%)**
   >É baseada na estratégia **Nearest Neighbor (Vizinho Mais Próximo)** onde seleciona a cidade inicial aleatória e sempre escolhe a cidade não visitada mais próxima.
@@ -148,5 +149,5 @@ A população inicial é gerada por uma abordagem híbrida:
   Critério: execução até G gerações
   ```
 
-  Com o critério de execução até `G` gerações, onde `G` é definido pelo usuário. Com esse algotimo é simples de implementar e permite o controle direto do tempo de execução.
+  Com o critério de execução até `G` gerações, onde `G` é definido pelo usuário. Esse algotimo é simples de implementar e permite o controle direto do tempo de execução.
 
