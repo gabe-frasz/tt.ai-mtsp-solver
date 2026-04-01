@@ -35,50 +35,33 @@ def _load_config_file(filepath: str) -> dict:
 
 def get_config() -> dict:
     """
-    Builds the final configuration by resolving the hierarchy of truth:
-    CLI Flags > Config File > Defaults
+    Builds the final configuration using the configuration file as the 
+    Single Source of Truth.
     """
-    parser = argparse.ArgumentParser(description="mTSP Genetic Algorithm Solver")
-    
+    parser = argparse.ArgumentParser(description="Multi-Problem Solver using Genetic Algorithm")
     parser.add_argument("-c", "--config", type=str, help="Path to the configuration file (.json or .yaml)")
-    
-    parser.add_argument("-p", "--population", type=int, help="Population size")
-    parser.add_argument("-g", "--generations", type=int, help="Number of generations")
-    parser.add_argument("-x", "--crossover", type=float, help="Crossover rate (ex: 0.8)")
-    parser.add_argument("-m", "--mutation", type=float, help="Mutation rate (ex: 0.05)")
-    parser.add_argument("-e", "--elite", type=int, help="Quantity of elite individuals (the ones with the best fitness to survive)")
-
-    # parser.add_argument("-w", "--workers", type=int, help="Quantity of workers (ex: 3)")
-    
     args = parser.parse_args()
 
-    # Defaults
-    params = {
-        "pop_size": 100,
-        "generations": 1000,
-        "crossover_rate": 0.8,
-        "mutation_rate": 0.1,
-        "elitism_count": 1,
-        # "num_workers": 3
-    }
+    config_path = args.config
 
-    # Config file overrides defaults
-    if args.config:
-        file_params = _load_config_file(args.config)
-        params.update(file_params)
+    # Fallback
+    if not config_path:
+        if os.path.exists("config.yaml"):
+            config_path = "config.yaml"
+        elif os.path.exists("config.yml"):
+            config_path = "config.yml"
+        elif os.path.exists("config.json"):
+            config_path = "config.json"
 
-    # CLI flags override config file and defaults
-    for key, value in vars(args).items():
-        if value is not None and key != "config":
-            param_key_map = {
-                "population": "pop_size",
-                "generations": "generations", 
-                "crossover": "crossover_rate",
-                "mutation": "mutation_rate",
-                "elite": "elitism_count",
-                # "workers": "num_workers"
-            }
-            mapped_key = param_key_map.get(key, key)
-            params[mapped_key] = value
+    if not config_path:
+        print("Fatal Error: No configuration file provided and default 'config.yaml/yml/json' not found.")
+        sys.exit(1)
 
-    return params
+    config = _load_config_file(config_path)
+
+    # Ensure the required blocks exist
+    if not all(key in config for key in ["ga_config", "problem_name", "problem_config"]):
+        print(f"Fatal Error: Configuration file '{config_path}' is missing required blocks (ga_config, problem_name, problem_config).")
+        sys.exit(1)
+
+    return config

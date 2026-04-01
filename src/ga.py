@@ -4,14 +4,15 @@ import random
 class GeneticAlgorithm:
     def __init__(
         self,
-        population_size: int,
+        pop_size: int,
         generations: int,
         mutation_rate: float,
         crossover_rate: float,
         elitism_count: int = 1,
         logger = None,
+        **kwargs
     ):
-        self.population_size = population_size
+        self.pop_size = pop_size
         self.generations = generations
         self.mutation_rate = mutation_rate
         self.crossover_rate = crossover_rate
@@ -19,7 +20,7 @@ class GeneticAlgorithm:
         self.logger = logger
 
     def run(self, problem):
-        population = problem.initialize(self.population_size)
+        population = problem.initialize(self.pop_size)
 
         best_overall_individual = None
         best_overall_fitness = float("-inf")
@@ -33,10 +34,9 @@ class GeneticAlgorithm:
 
             curr_best_individual, curr_best_fitness = evaluated_population[0]
             _, curr_worst_fitness = evaluated_population[-1]
-            avg_fitness = sum(fit for _, fit in evaluated_population) / self.population_size
+            avg_fitness = sum(fit for _, fit in evaluated_population) / self.pop_size
 
             if curr_best_fitness > best_overall_fitness:
-                best_overall_fitness = curr_best_fitness
                 best_overall_individual = curr_best_individual.copy()
 
             if self.logger: self.logger.log(gen, curr_best_fitness, avg_fitness, curr_worst_fitness)
@@ -46,7 +46,7 @@ class GeneticAlgorithm:
                 evaluated_population[i][0] for i in range(self.elitism_count)
             ]
 
-            while len(new_population) < self.population_size:
+            while len(new_population) < self.pop_size:
                 parent1 = self._tournament_selection(evaluated_population)
                 parent2 = self._tournament_selection(evaluated_population)
 
@@ -62,10 +62,9 @@ class GeneticAlgorithm:
 
                 new_population.extend([offspring1, offspring2])
 
-            population = new_population[:self.population_size]
+            population = new_population[:self.pop_size]
 
-        solution, violations, std_dev = problem.get_solution_from_individual(best_overall_individual)
-        return solution, violations, std_dev, best_overall_fitness
+        return best_overall_individual
 
     def _tournament_selection(
         self, evaluated_population: list[tuple[list[int], float]], k: int = 3
