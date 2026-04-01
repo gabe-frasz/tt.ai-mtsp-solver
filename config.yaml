@@ -10,6 +10,14 @@ problem_name: "mtsp"
 problem_config:
   num_workers: 3
   depot: [30, 30]
+  min_cities_per_worker: 5
+  max_cities_per_worker: 15
+  max_difference_per_worker: 5
+  max_distance_per_worker: 350.0
+  v: 10000.0
+  alpha: 1.0
+  beta: 3.0
+  penalty_multiplier: 5000.0
   cities:
     - [5, 10]
     - [15, 25]

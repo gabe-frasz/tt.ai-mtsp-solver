@@ -12,6 +12,14 @@ ensuring all cities are visited exactly once while optimizing for distance and b
 - `num_workers`: Number of workers.
 - `depot`: Coordinates of the depot.
 - `cities`: List of cities, each represented by a list of coordinates.
+- `min_cities_per_worker`: The minimum number of cities each worker must visit (Rule R4).
+- `max_cities_per_worker`: The maximum number of cities each worker is allowed to visit (Rule R5).
+- `max_difference_per_worker`: The maximum allowed difference in the number of cities visited between any two workers (Rule R6).
+- `max_distance_per_worker`: The maximum total distance a single worker can travel (Rule R7).
+- `v`: Base fitness constant to ensure positive values.
+- `alpha`: Weight for the total distance component in the fitness formula.
+- `beta`: Weight for the standard deviation (balance) component in the fitness formula.
+- `penalty_multiplier`: Multiplier applied to each constraint violation to heavily penalize invalid solutions.
 
 ### Example
 
@@ -21,6 +29,14 @@ problem_name: "mtsp"
 problem_config:
   num_workers: 3
   depot: [30, 30]
+  min_cities_per_worker: 5
+  max_cities_per_worker: 15
+  max_difference_per_worker: 5
+  max_distance_per_worker: 350.0
+  v: 10000.0
+  alpha: 1.0
+  beta: 3.0
+  penalty_multiplier: 5000.0
   cities:
     - [5, 10]
     - [15, 25]

@@ -3,31 +3,37 @@ import random
 from core.base_problem import BaseProblem
 from core.utils import Utils
 
-# Constraints
-MIN_CITIES_PER_WORKER = 5
-MAX_CITIES_PER_WORKER = 15
-MAX_DIFFERENCE_PER_WORKER = 5
-MAX_DISTANCE_PER_WORKER = 350.0
-
-# Objective-Scaled weights and base formula constants
-V = 10000.0
-ALPHA = 1.0 # weight for total distance
-BETA = 3.0  # weight for standard deviation (forces balanced distances)
-PENALTY_MULTIPLIER = V * 0.5
 
 class MTSP(BaseProblem):
     def __init__(
         self,
         cities: list[list[int, int]],
         depot: list[int, int],
-        num_workers: int = 3,
+        num_workers: int,
+        min_cities_per_worker: int,
+        max_cities_per_worker: int,
+        max_difference_per_worker: int,
+        max_distance_per_worker: float,
+        v: float,
+        alpha: float,
+        beta: float,
+        penalty_multiplier: float,
         **kwargs
     ):
         # Map cities to a numbered dict
         self.cities = {i: tuple(coord) for i, coord in enumerate(cities, start=1)}
-
         self.depot = tuple(depot)
         self.num_workers = num_workers
+
+        # Hyperparameters and constraints
+        self.min_cities_per_worker = min_cities_per_worker
+        self.max_cities_per_worker = max_cities_per_worker
+        self.max_difference_per_worker = max_difference_per_worker
+        self.max_distance_per_worker = max_distance_per_worker
+        self.v = v
+        self.alpha = alpha
+        self.beta = beta
+        self.penalty_multiplier = penalty_multiplier
 
         # We need num_workers - 1 dummy nodes to divide workers trajectories in the same list
         num_cities = len(cities)
@@ -79,22 +85,22 @@ class MTSP(BaseProblem):
         max_distance_violations = 0.0
         
         for i in range(self.num_workers):
-            if route_lengths[i] < MIN_CITIES_PER_WORKER:
-                min_cities_violations += (MIN_CITIES_PER_WORKER - route_lengths[i])
-            if route_lengths[i] > MAX_CITIES_PER_WORKER:
-                max_cities_violations += (route_lengths[i] - MAX_CITIES_PER_WORKER)
-            if route_distances[i] > MAX_DISTANCE_PER_WORKER:
-                max_distance_violations += (route_distances[i] - MAX_DISTANCE_PER_WORKER)
+            if route_lengths[i] < self.min_cities_per_worker:
+                min_cities_violations += (self.min_cities_per_worker - route_lengths[i])
+            if route_lengths[i] > self.max_cities_per_worker:
+                max_cities_violations += (route_lengths[i] - self.max_cities_per_worker)
+            if route_distances[i] > self.max_distance_per_worker:
+                max_distance_violations += (route_distances[i] - self.max_distance_per_worker)
                 
         length_diff = max(route_lengths) - min(route_lengths)
-        balance_violations = max(0, length_diff - MAX_DIFFERENCE_PER_WORKER)
+        balance_violations = max(0, length_diff - self.max_difference_per_worker)
         
-        total_penalties = (min_cities_violations * PENALTY_MULTIPLIER) + \
-                          (max_cities_violations * PENALTY_MULTIPLIER) + \
-                          (balance_violations * PENALTY_MULTIPLIER) + \
-                          (max_distance_violations * PENALTY_MULTIPLIER)
+        total_penalties = (min_cities_violations * self.penalty_multiplier) + \
+                          (max_cities_violations * self.penalty_multiplier) + \
+                          (balance_violations * self.penalty_multiplier) + \
+                          (max_distance_violations * self.penalty_multiplier)
 
-        return V - total_penalties - (ALPHA * total_distance) - (BETA * std_dev)
+        return self.v - total_penalties - (self.alpha * total_distance) - (self.beta * std_dev)
 
     def crossover(self, parent1: list[int], parent2: list[int]):
         size = len(parent1)
@@ -198,14 +204,14 @@ class MTSP(BaseProblem):
         max_cities_v = 0
         max_dist_v_count = 0
         for i in range(self.num_workers):
-            if route_lengths[i] < MIN_CITIES_PER_WORKER:
-                min_cities_v += (MIN_CITIES_PER_WORKER - route_lengths[i])
-            if route_lengths[i] > MAX_CITIES_PER_WORKER:
-                max_cities_v += (route_lengths[i] - MAX_CITIES_PER_WORKER)
-            if route_distances[i] > MAX_DISTANCE_PER_WORKER:
+            if route_lengths[i] < self.min_cities_per_worker:
+                min_cities_v += (self.min_cities_per_worker - route_lengths[i])
+            if route_lengths[i] > self.max_cities_per_worker:
+                max_cities_v += (route_lengths[i] - self.max_cities_per_worker)
+            if route_distances[i] > self.max_distance_per_worker:
                 max_dist_v_count += 1
         diff = max(route_lengths) - min(route_lengths)
-        balance_v = max(0, diff - MAX_DIFFERENCE_PER_WORKER)
+        balance_v = max(0, diff - self.max_difference_per_worker)
         v_list = []
         if min_cities_v > 0: v_list.append(f"{min_cities_v} (R4)")
         if max_cities_v > 0: v_list.append(f"{max_cities_v} (R5)")
