@@ -3,14 +3,14 @@ import inspect
 import os
 import sys
 
-from src.base_problem import BaseProblem
+from core.base_problem import BaseProblem
 
 
 def problem_factory(problem_name: str, **kwargs):
     try:
-        module = importlib.import_module(f"src.problems.{problem_name}")
+        module = importlib.import_module(f"problems.{problem_name}")
     except (ImportError, ModuleNotFoundError):
-        problems_dir = os.path.join(os.path.dirname(__file__), "problems")
+        problems_dir = os.path.join(os.getcwd(), "problems")
         available = [
             f[:-3] for f in os.listdir(problems_dir) 
             if f.endswith(".py") and f != "__init__.py"

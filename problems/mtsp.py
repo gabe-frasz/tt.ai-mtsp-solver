@@ -1,7 +1,7 @@
 import random
 
-from src.base_problem import BaseProblem
-from src.utils import Utils
+from core.base_problem import BaseProblem
+from core.utils import Utils
 
 # Constraints
 MIN_CITIES_PER_WORKER = 5

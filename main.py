@@ -1,7 +1,7 @@
-from src.factory import problem_factory
-from src.ga import GeneticAlgorithm
-from src.logger import GALogger
-from src.parser import get_config
+from core.factory import problem_factory
+from core.ga import GeneticAlgorithm
+from core.logger import GALogger
+from core.parser import get_config
 
 
 def main():
