@@ -1,78 +1,72 @@
-# Solucionador de mTSP - Algoritmo Genético
+# Universal Genetic Algorithm Hub
 
-Este projeto implementa um solucionador para o **Problema do Caixeiro Viajante Múltiplo (mTSP)** usando um **Algoritmo Genético (AG)** em Python. O Problema do Caixeiro-Viajante Múltiplo (mTSP) é uma versão do clássico Problema do Caixeiro-Viajante (TSP), em que vários vendedores trabalham juntos para visitar um conjunto de cidades.
+A decoupled framework for solving complex combinatorial optimization problems using [Genetic Algorithms](https://en.wikipedia.org/wiki/Genetic_algorithm).
+This hub is designed with architectural integrity, featuring lazy-loading problem discovery and
+a clear separation between the GA engine and problem domains.
 
-## 📋 Descrição do Problema
+## 🚀 Key Features
 
-Neste projeto, considera-se um cenário realista de uma empresa com 3 vendedores responsáveis por atender 30 cidades, representadas por coordenadas fixas em um plano cartesiano. Todos os vendedores partem de um depósito central localizado em (30, 30), realizam suas visitas e retornam ao ponto de origem ao final da rota.
+- **Decoupled Architecture**: The GA engine is completely agnostic of the problem being solved.
+- **Lazy Loading**: Problems are discovered and loaded dynamically via convention-over-configuration.
+- **Single Source of Truth**: All configurations (GA hyperparameters and problem-specific data) are managed via a central YAML/JSON file.
+- **Extensible**: Easily add new problems by inheriting from `BaseProblem`.
 
-O desafio é decidir quais cidades cada vendedor deve visitar e em que ordem, buscando tornar o trabalho da equipe o mais eficiente possível.
+## 🛠️ Installation
 
-- 🎯 **Objetivos:**
-O problema tem dois objetivos principais:
-  - Reduzir ao máximo a distância total percorrida por todos os vendedores;
-  - Manter as rotas equilibradas, evitando que alguns percorram muito mais que outros.
-Assim, a ideia é encontrar uma solução que seja não só eficiente no geral, mas também justa na divisão do trabalho entre os vendedores.
- 
-- ⚠️ **Restrições:**
-A solução deve respeitar as seguintes restrições:
-  - **Cobertura completa**: cada cidade deve ser visitada exatamente uma vez;
-  - **Limite de carga**: cada vendedor deve visitar entre 5 e 15 cidades;
-  - **Balanceamento**: a diferença no número de cidades entre quaisquer dois vendedores não pode exceder 5;
-  - **Limite de distância**: a rota total de cada vendedor não pode ultrapassar 350 unidades de distância;
-  - **Ciclo fechado**: todas as rotas devem começar e terminar no depósito central.
- 
-- ⚙️ **Abordagem de Solução:**
-Para resolver o problema, o projeto utiliza um **Algoritmo Genético**, inspirado no processo de evolução natural, para encontrar boas soluções de forma aproximada. Cada solução possível representa uma maneira de dividir e organizar as rotas entre os vendedores, e, ao longo das gerações, essas soluções vão sendo melhoradas por meio de operações como **seleção, cruzamento e mutação**.
-
-## 🛠️ Instalação
-
-1. **Clone o repositório:**
+1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/tt.ai-mtsp-solver.git
-   cd tt.ai-mtsp-solver
+   git clone https://github.com/your-username/fr.genetic-algorithm-hub.git
+   cd fr.genetic-algorithm-hub
    ```
 
-2. **(Opcional) Crie um ambiente virtual:**
+2. **Set up the environment:**
    ```bash
    python3 -m venv venv
-   source venv/bin/bin/activate  # Linux/macOS
+   source venv/bin/activate  # Linux/macOS
    ```
 
-3. **Instale as dependências:**
-   *(Opcional)* Se você quiser usar arquivos de configuração YAML:
+3. **Install dependencies:**
    ```bash
    pip install pyyaml
    ```
 
-## 🚀 Execução:
+## 📋 Quickstart
 
-Execute o solucionador usando os parâmetros padrão:
+Run the solver using the default `config.yaml` (if present):
 ```bash
 python3 main.py
 ```
 
-### Configuração via Flags da CLI
-
-Você pode sobrescrever os parâmetros diretamente da linha de comando:
+To use a custom configuration file:
 ```bash
-python3 main.py -p 200 -g 500 -m 0.1 -w 3
+python3 main.py --config custom_config.yaml
 ```
 
-**Opções disponíveis:**
-- `-p, --population`: Tamanho da população (default: 100).
-- `-g, --generations`: Número de gerações (default: 1000).
-- `-m, --mutation`: Taxa de mutação (0.0 to 1.0).
-- `-x, --crossover`: Taxa de cruzamento (0.0 to 1.0).
-- `-e, --elite`: Número de indivíduos de elite a serem preservados.
-- `-c, --config`: Caminho para um arquivo de configuração `.json` ou `.yaml`.
+## ⚙️ Configuration
 
-### Exemplos de saída
+The engine is universally controlled by the `config.yaml` file located in the root directory.
+You don't need to touch the Python code to tune the Genetic Algorithm. 
 
-O programa exibirá a rota completa para cada trabalhador, as distâncias individuais, a distância total, o desvio padrão e quaisquer violações de restrição encontradas.
+The configuration file is divided into three main blocks: `ga_config`, `problem_name`, and `problem_config`.
 
-## 📂 Estrutura do Projeto
+The `ga_config` block is entirely agnostic and dictates the behavior of the evolutionary engine:
 
-- `src/`: Código-fonte contendo a lógica do algoritmo genético, a definição do problema e utilitários.
-- `main.py`: Ponto de entrada para a aplicação.
-- `docs/`: Documentação técnica (modelagem e hiperparâmetros).
+| Parameter | Type | Description |
+| :--- | :---: | :--- |
+| `pop_size` | `int` | The number of individuals (chromosomes) in each generation. Larger populations explore the search space better but take longer to compute. |
+| `generations` | `int` | The maximum number of evolutionary cycles the engine will run before stopping and returning the best found solution. |
+| `crossover_rate` | `float` | The probability (0.0 to 1.0) of two selected parents mating to produce offspring. High rates encourage mixing of good traits. |
+| `mutation_rate` | `float` | The probability (0.0 to 1.0) of a gene mutating. Essential for maintaining genetic diversity and preventing the algorithm from getting stuck in local optima. |
+| `elitism_count` | `int` | The absolute number of the absolute best individuals that are guaranteed to survive to the next generation without undergoing crossover or mutation. |
+
+The `problem_name` block specifies the name of the file of the problem to be solved
+and the `problem_config` block contains the problem-specific parameters.
+
+*Note: To see the specific `problem_config` parameters required for each domain,
+please refer to the individual problem documentation below.*
+
+## 📂 Supported Problems
+
+Detailed documentation for each supported problem can be found in the [docs/problems/](./docs/problems/) folder.
+
+- [Multiple Traveling Salesperson Problem (mTSP)](./docs/problems/mtsp.md)
